@@ -1,5 +1,5 @@
 import React from "react";
-
+import uuid from "react-uuid";
 export class Board extends React.Component {
   render() {
     let rows = [];
@@ -14,13 +14,14 @@ export class Board extends React.Component {
         />
       );
     }
+    console.log("row", this.props.state.totalRows);
     return <div className='board'>{rows}</div>;
   }
 }
 
 const Row = props => {
   let active = "";
-  console.log("aaa", props.id);
+  console.log("aaa", props.state.activeRow);
   if (+props.id.substr(4) === props.state.activeRow) {
     active = "active";
   }
@@ -56,7 +57,7 @@ class Circles extends React.Component {
         />
       );
     }
-
+    console.log("pegs", Pegs);
     return <div className='circles'> {Pegs} </div>;
   }
 }
@@ -71,6 +72,7 @@ class Peg extends React.Component {
     let clase = "";
     if (this.props.state.activeRow === rowId) {
       clase = this.props.state.currentRow[pegId];
+      console.log("clase", clase);
     } else {
       for (let i in this.props.state.previousRows) {
         if (+i === +rowId) {
