@@ -14,6 +14,6 @@ export const Colors = props => {
       ></div>
     );
   });
-
+  console.log("allColors", allColors);
   return <div className='colors'>{allColors}</div>;
 };

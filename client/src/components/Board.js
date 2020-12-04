@@ -1,27 +1,25 @@
 import React from "react";
-import uuid from "react-uuid";
-export class Board extends React.Component {
-  render() {
-    let rows = [];
-    for (let i = 0; i < this.props.state.totalRows; i++) {
-      rows.push(
-        <Row
-          key={"row_" + i}
-          id={"row_" + i}
-          state={this.props.state}
-          pegAction={this.props.pegAction}
-          checkAction={this.props.checkAction}
-        />
-      );
-    }
-    console.log("row", this.props.state.totalRows);
-    return <div className='board'>{rows}</div>;
+//import uuid from "react-uuid";
+
+export const Board = props => {
+  let rows = [];
+  for (let i = 0; i < props.state.totalRows; i++) {
+    rows.push(
+      <Row
+        key={"row_" + i}
+        id={"row_" + i}
+        state={props.state}
+        pegAction={props.pegAction}
+        checkAction={props.checkAction}
+      />
+    );
   }
-}
+  return <div className='board'>{rows}</div>;
+};
 
 const Row = props => {
   let active = "";
-  console.log("aaa", props.state.activeRow);
+  console.log("aaa", props.state);
   if (+props.id.substr(4) === props.state.activeRow) {
     active = "active";
   }
@@ -34,7 +32,7 @@ const Row = props => {
         pegAction={props.pegAction}
       />
       <Hints state={props.state} rowId={props.id} />
-      <OkButton
+      <CheckButton
         state={props.state}
         rowId={props.id}
         checkAction={props.checkAction}
@@ -43,55 +41,44 @@ const Row = props => {
   );
 };
 
-class Circles extends React.Component {
-  render() {
-    const rowId = this.props.rowId.substr(4);
-    let Pegs = [];
-    for (let i = 0; i < 4; i++) {
-      Pegs.push(
-        <Peg
-          state={this.props.state}
-          pegAction={this.props.pegAction}
-          key={"p" + rowId + "-" + i}
-          pegId={"p" + rowId + "-" + i}
-        />
-      );
-    }
-    console.log("pegs", Pegs);
-    return <div className='circles'> {Pegs} </div>;
-  }
-}
-
-class Peg extends React.Component {
-  render() {
-    const pegId = +this.props.pegId.substr(this.props.pegId.indexOf("-") + 1);
-    const rowId = +this.props.pegId.substr(
-      1,
-      this.props.pegId.indexOf("-") - 1
+const Circles = props => {
+  const rowId = props.rowId.substr(4);
+  let Pegs = [];
+  for (let i = 0; i < 4; i++) {
+    Pegs.push(
+      <Peg
+        state={props.state}
+        pegAction={props.pegAction}
+        key={"p" + rowId + "-" + i}
+        pegId={"p" + rowId + "-" + i}
+      />
     );
-    let clase = "";
-    if (this.props.state.activeRow === rowId) {
-      clase = this.props.state.currentRow[pegId];
-      console.log("clase", clase);
-    } else {
-      for (let i in this.props.state.previousRows) {
-        if (+i === +rowId) {
-          clase = this.props.state.previousRows[rowId][pegId];
-        }
+  }
+  return <div className='circles'> {Pegs} </div>;
+};
+
+const Peg = props => {
+  const pegId = +props.pegId.substr(props.pegId.indexOf("-") + 1);
+  const rowId = +props.pegId.substr(1, props.pegId.indexOf("-") - 1);
+  let showColor = ""; // for render the color
+  if (props.state.activeRow === rowId) {
+    showColor = props.state.currentRow[pegId];
+  } else {
+    for (let i in props.state.previousRows) {
+      if (+i === +rowId) {
+        showColor = props.state.previousRows[rowId][pegId];
       }
     }
-
-    return (
-      <span
-        id={this.props.pegId}
-        className={"peg " + clase}
-        onClick={() =>
-          this.props.pegAction(this.props.state.activeColor, this.props.pegId)
-        }
-      ></span>
-    );
   }
-}
+
+  return (
+    <span
+      id={props.pegId}
+      className={"peg " + showColor}
+      onClick={() => props.pegAction(props.state.activeColor, props.pegId)}
+    ></span>
+  );
+};
 
 const Hints = props => {
   let allHints = [];
@@ -132,7 +119,7 @@ const CheckBox = props => (
   <span className={props.hintClass} id={props.id}></span>
 );
 
-const OkButton = props => {
+const CheckButton = props => {
   const row = +props.rowId.substr(4);
   let disabled = "disabled";
   const doNothing = () => false;

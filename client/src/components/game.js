@@ -12,7 +12,7 @@ export class Game extends React.Component {
     this.checkRow = this.checkRow.bind(this);
     this.newGame = this.newGame.bind(this);
 
-    const colors = ["red", "green", "blue", "orange", "purple"];
+    const colors = ["red", "green", "blue", "orange", "purple", "black"];
     const trueRow = [];
     for (let i = 0; i < 4; i++) {
       trueRow.push(colors[Math.floor(Math.random() * 4) + 1]);
@@ -26,7 +26,7 @@ export class Game extends React.Component {
       currentRow: ["", "", "", ""],
       hints: [0, 0, 0, 0],
       activeRow: 0,
-      totalRows: 10,
+      totalRows: 12,
       trueRow: trueRow,
       canCheck: false, //this checks if it's ok to eval currentRow
       victory: false,
@@ -48,9 +48,10 @@ export class Game extends React.Component {
     const pegId = +id.substr(id.indexOf("-") + 1);
     let currentRow = this.state.currentRow;
     let isArrayFull = 0;
-
+    // console.log("rowid", rowId, "PEGid", pegId);
     if (this.state.activeRow === rowId && color) {
       currentRow[pegId] = color;
+      console.log("currentRow[pegId]", currentRow[pegId]);
       this.setState({
         currentRow: currentRow
       });
@@ -70,6 +71,7 @@ export class Game extends React.Component {
   }
 
   checkRow() {
+    // console.log(this.state.currentRow);
     const currentRow = JSON.parse(JSON.stringify(this.state.currentRow));
     const trueRow = JSON.parse(JSON.stringify(this.state.trueRow));
     const hints = this.state.hints;
